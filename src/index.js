@@ -6,7 +6,7 @@ const temp = document.querySelector(".temp")
 const container = document.querySelector(".container")
 const errwor = document.querySelector(".error")
 
-const obj = {}
+
 
 displayWeather("Monaco")
 
@@ -16,7 +16,11 @@ async function weather(city) {
         if (response.ok) {
             let data = await response.json();
 
-            await dataObj(data)
+            console.log(data);
+
+            const obj = await dataObj(data)
+
+            console.log(obj);
 
             await backgroundImg(data.weather[0].description)
             
@@ -38,50 +42,53 @@ async function backgroundImg(desc) {
 
 
 async function dataObj(data) {
-    obj["weather"] = await data.weather
-    obj["location"] = await data.name
-    obj["temp"] = await data.main.temp
-    obj["wind"] = await data.wind
 
+    const obj = {
+        weather: data.weather,
+        location: data.name,
+        temp: data.main.temp,
+        
+    }
+
+    console.log(obj["temp"])
+    
     return obj
 }
 
 let celsius;
 let fahrenheit;
 
-function displayWeather(location) {
-    weather(location)
-        .then(obj => {
-            
-            city.textContent = obj["location"]
 
-            celsius = Math.round(obj["temp"] * 10) / 10;
-            fahrenheit = (celsius * (9 / 5)) + 32;
-            
 
-            temp.textContent = `${celsius} C`
-            weatherInfo.textContent = obj["weather"][0].main
-            desc.textContent = obj["weather"][0].description
-        }).catch(() => {
-            console.log("location not found")
-            city.textContent = "Location not found"
-        })
+async function displayWeather(location) {
+
+    try {
+        const obj = await weather(location)
+    
+        city.textContent = obj.location;
+    
+        celsius = Math.round(obj["temp"] * 10) / 10;
+        fahrenheit = (celsius * (9 / 5)) + 32;
+        
+    
+        temp.textContent = `${celsius} C`
+        weatherInfo.textContent = obj["weather"][0].main
+        desc.textContent = obj["weather"][0].description
+    } catch (err){
+        console.log(err)
+    }
 }
 
-const loading = document.querySelector(".loading")
+
 
 
 const input = document.querySelector("input")
 
 const button = document.querySelector(".Search")
-button.addEventListener("click", async (e) => {
+button.addEventListener("click", (e) => {
     e.preventDefault();
 
-
-
     displayWeather(input.value)
-    
-    
 })
 
 temp.addEventListener("click", () => {
@@ -89,7 +96,6 @@ temp.addEventListener("click", () => {
     if (temp.textContent == `${celsius} C`) {
         temp.textContent = `${fahrenheit} F`
     } else temp.textContent = `${celsius} C`
-   
     
 })
 
