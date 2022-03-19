@@ -68,16 +68,20 @@ function displayWeather(location) {
         })
 }
 
+const loading = document.querySelector(".loading")
 
 
 const input = document.querySelector("input")
 
 const button = document.querySelector(".Search")
-button.addEventListener("click", (e) => {
+button.addEventListener("click", async (e) => {
     e.preventDefault();
-    
+
+
 
     displayWeather(input.value)
+    
+    
 })
 
 temp.addEventListener("click", () => {
